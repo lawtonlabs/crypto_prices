@@ -1,0 +1,36 @@
+<!-- Save this as templates/stream/test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crypto Price WebSocket Test</title>
+</head>
+<body>
+<h1>Crypto Price Updates</h1>
+<div id="price-updates"></div>
+
+<script>
+    const priceUpdates = document.getElementById('price-updates');
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/crypto/');
+
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const div = document.createElement('div');
+        div.textContent = `${data.symbol}: $${data.price} at ${new Date(data.timestamp).toLocaleString()}`;
+        priceUpdates.prepend(div);
+    };
+
+    socket.onopen = function (event) {
+        const div = document.createElement('div');
+        div.textContent = 'Connected to WebSocket';
+        priceUpdates.prepend(div);
+    };
+
+    socket.onerror = function (error) {
+        const div = document.createElement('div');
+        div.textContent = 'WebSocket Error: ' + error;
+        div.style.color = 'red';
+        priceUpdates.prepend(div);
+    };
+</script>
+</body>
+</html>
